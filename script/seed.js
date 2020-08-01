@@ -1,18 +1,46 @@
 'use strict'
 
 const db = require('../server/db')
-const {User} = require('../server/db/models')
+const {Timesheet, User} = require('../server/db/models')
 
 async function seed() {
   await db.sync({force: true})
   console.log('db synced!')
 
   const users = await Promise.all([
-    User.create({email: 'cody@email.com', password: '123'}),
-    User.create({email: 'murphy@email.com', password: '123'})
+    User.create({email: 'admin@admin.com', password: 'admin'})
   ])
 
-  console.log(`seeded ${users.length} users`)
+  const timesheets = await Promise.all([
+    Timesheet.create({
+      description: 'Host Training',
+      startTime: '2020-07-21 14:00:00',
+      endTime: '2020-07-21 16:00:00',
+      userId: users[0].id
+    }),
+    Timesheet.create({
+      description: 'Host Training',
+      startTime: '2020-07-23 16:00:00',
+      endTime: '2020-07-23 18:00:00',
+      userId: users[0].id
+    }),
+    Timesheet.create({
+      description: 'Promo',
+      startTime: '2020-07-29 12:00:00',
+      endTime: '2020-07-29 16:00:00',
+      userId: users[0].id
+    }),
+    Timesheet.create({
+      description: 'Promo',
+      startTime: '2020-07-30 12:00:00',
+      endTime: '2020-07-30 16:00:00',
+      userId: users[0].id
+    })
+  ])
+
+  console.log(
+    `seeded ${users.length} users and ${timesheets.length} timesheets`
+  )
   console.log(`seeded successfully`)
 }
 
