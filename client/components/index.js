@@ -5,6 +5,7 @@
  */
 export {default as Chart} from './Chart'
 export {default as Dashboard} from './Dashboard'
+export {default as Drawer} from './drawer'
 export {mainListItems, secondaryListItems} from './list-items'
 export {Login, Signup} from './auth-form'
 export {default as Navbar} from './navbar'

@@ -9,8 +9,10 @@ import {
   TableHead,
   TableRow
 } from '@material-ui/core'
+import moment from 'moment'
 
 import Title from './Title'
+import {getHours} from '../utils'
 
 function preventDefault(event) {
   event.preventDefault()
@@ -19,47 +21,61 @@ function preventDefault(event) {
 const useStyles = makeStyles(theme => ({
   seeMore: {
     marginTop: theme.spacing(3)
+  },
+  tableHeader: {
+    '& th': {
+      fontWeight: '500'
+    }
+  },
+  tableBody: {
+    '& td': {
+      fontWeight: '300'
+    }
   }
 }))
 
 const Timesheets = props => {
   const classes = useStyles()
 
-  console.log('TIMESHEETS', props.timesheets)
+  const formatDate = date => moment(date).format('ddd MMM DD')
 
-  const getHours = (date2, date1) => {
-    console.log('DATE1', date1, 'date2', date2)
-    let diff = (Date.parse(date2) - Date.parse(date1)) / 1000
-    diff /= 60 * 60
-    return Math.abs(Math.round(diff))
-  }
+  const formatTime = date => moment(date).format('LT')
+  // new Date(date).toLocaleTimeString('en-US')
 
   return (
     <Fragment>
-      <Title>Recent Timesheets</Title>
+      <Title>This Week's Timesheets</Title>
       <Table size="small">
-        <TableHead>
+        <TableHead className={classes.tableHeader}>
           <TableRow>
             <TableCell>Description</TableCell>
-            <TableCell>Start Time</TableCell>
-            <TableCell>End Time</TableCell>
+            <TableCell align="left">Date</TableCell>
+            <TableCell align="left">Start Time</TableCell>
+            <TableCell align="left">End Time</TableCell>
             <TableCell align="right">Total Hours</TableCell>
           </TableRow>
         </TableHead>
-        {Object.keys(props.timesheets).length && (
-          <TableBody>
-            {props.timesheets.map(row => (
-              <TableRow key={row.id}>
-                <TableCell>{row.description}</TableCell>
-                <TableCell>{row.startTime}</TableCell>
-                <TableCell>{row.endTime}</TableCell>
-                <TableCell align="right">
-                  {getHours(row.endTime, row.startTime)}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        )}
+        <TableBody className={classes.tableBody}>
+          {Object.keys(props.timesheets).length ? (
+            props.timesheets
+              .sort((a, b) => (a.startTime < b.startTime ? -1 : 1))
+              .map(row => (
+                <TableRow key={row.id}>
+                  <TableCell>{row.description}</TableCell>
+                  <TableCell>{formatDate(row.startTime)}</TableCell>
+                  <TableCell>{formatTime(row.startTime)}</TableCell>
+                  <TableCell>{formatTime(row.endTime)}</TableCell>
+                  <TableCell align="right">
+                    {getHours(row.endTime, row.startTime)}
+                  </TableCell>
+                </TableRow>
+              ))
+          ) : (
+            <TableRow>
+              <TableCell>No data for this week</TableCell>
+            </TableRow>
+          )}
+        </TableBody>
       </Table>
       <div className={classes.seeMore}>
         <Link color="primary" href="#" onClick={preventDefault}>

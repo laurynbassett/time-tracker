@@ -2,83 +2,17 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import clsx from 'clsx'
 import {withStyles} from '@material-ui/core/styles'
-import {
-  AppBar,
-  Badge,
-  Container,
-  CssBaseline,
-  Divider,
-  Drawer,
-  Grid,
-  IconButton,
-  List,
-  Paper,
-  Toolbar,
-  Typography
-} from '@material-ui/core'
-import {ChevronLeft, Menu, Notifications} from '@material-ui/icons'
-import Chart from './Chart'
-import {mainListItems, secondaryListItems, Timesheets} from '.'
-import {fetchTimesheets} from '../store'
+import {Container, CssBaseline, Grid, Paper} from '@material-ui/core'
 
-const drawerWidth = 240
+import Chart from './Chart'
+import {Timesheets} from '.'
+import {fetchTimesheets} from '../store'
 
 const useStyles = theme => ({
   root: {
-    display: 'flex'
-  },
-  toolbar: {
-    paddingRight: 24 // keep right padding when drawer closed
-  },
-  toolbarIcon: {
     display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    padding: '0 8px',
-    ...theme.mixins.toolbar
-  },
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    })
-  },
-  appBarShift: {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen
-    })
-  },
-  menuButton: {
-    marginRight: 36
-  },
-  menuButtonHidden: {
-    display: 'none'
-  },
-  title: {
-    flexGrow: 1
-  },
-  drawerPaper: {
-    position: 'relative',
-    whiteSpace: 'nowrap',
-    width: drawerWidth,
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen
-    })
-  },
-  drawerPaperClose: {
-    overflowX: 'hidden',
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen
-    }),
-    width: theme.spacing(7),
-    [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(9)
+    '& *': {
+      fontFamily: 'Spartan'
     }
   },
   appBarSpacer: theme.mixins.toolbar,
@@ -103,90 +37,18 @@ const useStyles = theme => ({
 })
 
 class Dashboard extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      open: true
-    }
-  }
-
   componentDidMount() {
     console.log('MOUNTING TIMESHEETS', this.props.userId)
     this.props.getTimesheets(this.props.userId)
   }
 
   render() {
-    console.log('props', this.props)
-
     const {classes} = this.props
-    const handleDrawerOpen = () => {
-      this.setState({open: true})
-    }
-    const handleDrawerClose = () => {
-      console.log('CLOSING DRAWER')
-      this.setState({open: false})
-    }
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight)
 
     return (
       <div className={classes.root}>
         <CssBaseline />
-        <AppBar
-          position="absolute"
-          className={clsx(
-            classes.appBar,
-            this.state.open && classes.appBarShift
-          )}
-        >
-          <Toolbar className={classes.toolbar}>
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              className={clsx(
-                classes.menuButton,
-                this.state.open && classes.menuButtonHidden
-              )}
-            >
-              <Menu />
-            </IconButton>
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              className={classes.title}
-            >
-              Dashboard
-            </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <Notifications />
-              </Badge>
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-        <Drawer
-          variant="permanent"
-          classes={{
-            paper: clsx(
-              classes.drawerPaper,
-              !this.state.open && classes.drawerPaperClose
-            )
-          }}
-          open={this.state.open}
-        >
-          <div className={classes.toolbarIcon}>
-            <IconButton onClick={handleDrawerClose}>
-              <ChevronLeft />
-            </IconButton>
-          </div>
-          <Divider />
-          <List>{mainListItems}</List>
-          <Divider />
-          <List>{secondaryListItems}</List>
-        </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
           <Container maxWidth="lg" className={classes.container}>
@@ -218,7 +80,5 @@ const mapState = state => ({
 const mapDispatch = dispatch => ({
   getTimesheets: userId => dispatch(fetchTimesheets(userId))
 })
-
-// const enhance = compose(withStyles(useStyles), connect(mapState, mapDispatch))
 
 export default connect(mapState, mapDispatch)(withStyles(useStyles)(Dashboard))

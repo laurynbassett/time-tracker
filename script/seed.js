@@ -35,6 +35,12 @@ async function seed() {
       startTime: '2020-07-30 12:00:00',
       endTime: '2020-07-30 16:00:00',
       userId: users[0].id
+    }),
+    Timesheet.create({
+      description: 'Host Shift',
+      startTime: '2020-08-01 16:00:00',
+      endTime: '2020-08-01 23:15:00',
+      userId: users[0].id
     })
   ])
 
